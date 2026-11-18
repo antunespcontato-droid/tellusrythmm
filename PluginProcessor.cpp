@@ -291,3 +291,9 @@ void PsyProcessor::loadFactoryPreset (int idx)
 }
 
 juce::AudioProcessorEditor* PsyProcessor::createEditor() { return new PsyEditor (*this); }
+
+// Ponto de entrada exigido pelo JUCE (escopo global).
+juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
+{
+    return new PsyProcessor();
+}

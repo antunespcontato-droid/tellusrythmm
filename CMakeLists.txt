@@ -34,7 +34,7 @@ if(PSY_BUILD_PLUGIN)
     VST3_CATEGORIES Instrument Generator
     COPY_PLUGIN_AFTER_BUILD FALSE)
 
-  target_sources(PsyRhythm PRIVATE Source/Plugin/PluginProcessor.cpp Source/Plugin/PluginEditor.cpp Source/Plugin/PluginEntry.cpp)
+  target_sources(PsyRhythm PRIVATE Source/Plugin/PluginProcessor.cpp Source/Plugin/PluginEditor.cpp)
   target_include_directories(PsyRhythm PRIVATE Source/Engine)
 
   # Logo oficial: usada somente se assets/logo.png existir (nunca é redesenhada/distorcida)
@@ -48,7 +48,9 @@ if(PSY_BUILD_PLUGIN)
   endif()
 
   target_compile_definitions(PsyRhythm PUBLIC JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0 JUCE_DISPLAY_SPLASH_SCREEN=0)
-  target_link_libraries(PsyRhythm PRIVATE juce::juce_audio_utils juce::juce_recommended_config_flags juce::juce_recommended_warning_flags)
+  target_link_libraries(PsyRhythm PRIVATE juce::juce_audio_utils juce::juce_recommended_warning_flags)
+  set_target_properties(PsyRhythm PROPERTIES INTERPROCEDURAL_OPTIMIZATION OFF)
+  message(STATUS "PsyRhythm: createPluginFilter esta em Source/Plugin/PluginProcessor.cpp; sem /GL")
   if(MSVC)
     target_compile_options(PsyRhythm PRIVATE /O2)
   endif()
