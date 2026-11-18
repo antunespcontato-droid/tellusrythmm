@@ -1,0 +1,34 @@
+name: Build Windows VST3 + Installer
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Engine tests
+        continue-on-error: true
+        run: |
+          cmake -S . -B build-tests -DPSY_BUILD_PLUGIN=OFF
+          cmake --build build-tests --config Release
+          ctest --test-dir build-tests -C Release --output-on-failure
+
+      - name: Build VST3
+        run: |
+          cmake -S . -B build -DPSY_BUILD_TESTS=OFF
+          cmake --build build --config Release --target PsyRhythm_VST3
+
+      - name: Installer (Inno Setup)
+        run: |
+          choco install innosetup -y
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\PsyRhythm.iss
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PsyRhythm-Windows
+          path: |
+            dist/*.exe
+            build/PsyRhythm_artefacts/Release/VST3/
